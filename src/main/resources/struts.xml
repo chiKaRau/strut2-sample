@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN" "http://struts.apache.org/dtds/struts-2.5.dtd">
+<struts>
+	<constant name="struts.tiles.definition.files"
+		value="/WEB-INF/tiles.xml" />
+
+	<package name="default" extends="struts-default">
+
+		<result-types>
+			<result-type name="tiles"
+				class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>
+
+		<!-- Defining global interceptors -->
+		<interceptors>
+			<interceptor name="logging"
+				class="com.example.LoggingInterceptor" />
+			<interceptor-stack name="globalStack">
+				<interceptor-ref name="logging" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+
+			<interceptor name="timer"
+				class="com.example.TimerInterceptor" />
+			<interceptor-stack name="mySpecialActionStack">
+				<interceptor-ref name="timer" />
+				<interceptor-ref name="logging" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+		<!-- Apply the global interceptor stack to all actions -->
+		<default-interceptor-ref name="globalStack" />
+
+		<!-- Global Results -->
+		<global-results>
+			<result name="error">/WEB-INF/views/error.jsp</result>
+		</global-results>
+
+		<!-- Global Exception Mappings -->
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<action name="home" class="com.example.HomeAction">
+			<result type="tiles">home.page</result>
+		</action>
+
+		<action name="contact" class="com.example.ContactAction">
+			<result type="tiles">contact.page</result>
+		</action>
+
+		<!-- Actions configuration -->
+		<action name="hello"
+			class="com.example.helloworld.HelloWorldAction">
+			<result name="success">/WEB-INF/views/hello.jsp</result>
+		</action>
+
+		<action name="login" class="com.example.auth.LoginAction">
+			<result name="success">/WEB-INF/views/welcome.jsp</result>
+			<result name="error">/WEB-INF/views/login.jsp</result>
+		</action>
+
+		<action name="mySpecialAction"
+			class="com.example.MySpecialAction">
+			<!-- Apply custom interceptor stack to this action -->
+			<interceptor-ref name="mySpecialActionStack" />
+			<result name="success">/WEB-INF/views/welcome.jsp</result>
+		</action>
+
+		<action name="error" class="com.example.ErrorAction">
+			<result name="success">/WEB-INF/views/welcome.jsp</result>
+		</action>
+
+		<!-- More actions can be defined here -->
+	</package>
+</struts>
